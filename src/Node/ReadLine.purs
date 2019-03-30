@@ -13,19 +13,24 @@ module Node.ReadLine
   , historySize
   , noCompletion
   , prompt
+  , promptPreserve
   , setPrompt
   , setLineHandler
   , close
   , question
+  , clearLine
+  , clearScreenDown
+  , cursorTo
+  , cursorToX
+  , moveCursor
+  , onClose
   ) where
 
 import Prelude
 
-import Effect (Effect)
-
-import Foreign (Foreign)
 import Data.Options (Options, Option, (:=), options, opt)
-
+import Effect (Effect)
+import Foreign (Foreign)
 import Node.Process (stdin, stdout)
 import Node.Stream (Readable, Writable)
 
@@ -86,6 +91,8 @@ noCompletion s = pure { completions: [], matched: s }
 -- | Prompt the user for input on the specified `Interface`.
 foreign import prompt :: Interface -> Effect Unit
 
+foreign import promptPreserve :: Interface -> Effect Unit
+
 -- | Writes a query to the output, waits
 -- | for user input to be provided on input, then invokes
 -- | the callback function
@@ -114,3 +121,16 @@ foreign import setLineHandler
    . Interface
   -> LineHandler a
   -> Effect Unit
+
+foreign import clearLine :: forall a. Writable a -> Int -> Effect Unit
+
+foreign import clearScreenDown :: forall a. Writable a -> Effect Unit
+
+foreign import cursorTo :: forall a. Writable a -> Int -> Int -> Effect Unit
+
+foreign import cursorToX :: forall a. Writable a -> Int -> Effect Unit
+
+foreign import moveCursor :: forall a. Writable a -> Int -> Int -> Effect Unit
+
+foreign import onClose :: Interface -> Effect Unit -> Effect Unit
+
